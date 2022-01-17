@@ -1,0 +1,192 @@
+﻿@using LaBrasa.Shared.Entities;
+@using LaBrasa.Shared.Interfaces;
+
+@inject IFuncionarioRepo _repo;
+
+@page "/funcionarios"
+
+<h3>Funcionarios</h3>
+
+<style>
+    .btn {
+        border-radius: 0;
+    }
+
+    .btn-danger {
+    }
+
+    .btn-primary, .btn-success {
+    }
+
+    .float {
+        position: absolute;
+        right: 0;
+        margin-right: 10px;
+        top: 0;
+        margin-top: 5px;
+    }
+
+    .float-2 {
+        position: absolute;
+        right: 0;
+        margin-right: 80px;
+        top: 0;
+        margin-top: 5px;
+    }
+</style>
+
+@if (visibilidadePainel)
+{
+    <div class="input-group">
+        <input class="form-control" placeholder="Pesquisar..." />
+        <button class="btn btn-danger" style="border-radius: 0!important"><i class="oi oi-magnifying-glass"></i></button>
+        <button class="btn btn-success" style="margin-left: 25px;" @onclick="alterarVisibilidade"><i class="oi oi-plus"></i></button>
+    </div>
+
+
+    <ul class="list-group mt-3">
+
+        @foreach (var funcionario in ListFuncionarios)
+        {
+            <li class="list-group-item mt-4">
+                @funcionario.Nome
+                <div class="float-2">
+                    <button class="btn btn-danger" @onclick="() => ApagarFuncionario(funcionario.Id)"><i>X</i></button>
+                </div>
+
+                <div class="float">
+                    <button class="btn btn-primary"><i class="oi oi-pencil" @onclick="() => EditarFuncionario(funcionario.Id)"></i></button>
+                </div>
+            </li>
+        }
+    </ul>
+}
+
+@if (visibilidadeForm)
+{
+
+    <div>
+        @tituloForm
+    </div>
+    <form>
+        <div class="row">
+            <div class="form-group col-8">
+                <label for="exampleInputEmail1">Nome</label>
+                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Nome" @bind="funcionario.Nome">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-8">
+                <label for="exampleInputEmail1">Departamento</label>
+                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Departamento" @bind="funcionario.Departamento">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-8">
+                <label for="exampleInputEmail1">Sexo</label>
+                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Sexo" @bind="funcionario.Sexo">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-8">
+                <label for="exampleInputEmail1">Cpf</label>
+                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="CPF" @bind="funcionario.Cpf">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-4">
+                <label for="exampleInputEmail1">Telefone</label>
+                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Telefone" @bind="funcionario.Telefone">
+            </div>
+
+            <div class="form-group col-4">
+                <label for="exampleInputEmail1">Endereco</label>
+                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Endereco" @bind="funcionario.Endereco">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-12">
+                <label for="exampleInputEmail1">Email</label>
+                <input type="text" class="form-control" id="exampleInputEmail1" @bind="funcionario.Email">
+            </div>
+        </div>
+
+        <div class="row">
+            <button type="submit" class="btn btn-danger col-6" @onclick="() => AdicionarFuncionario(funcionario)">Incluir</button>
+            <button class="btn btn-light col-6" @onclick="alterarVisibilidade">Voltar</button>
+        </div>
+    </form>
+
+}
+
+
+
+@code {
+    string tituloForm;
+    bool visibilidadePainel = true;
+    bool visibilidadeForm = false;
+
+    Funcionario funcionario = new Funcionario();
+
+    List<Funcionario> ListFuncionarios = new List<Funcionario>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await PegarTodos();
+    }
+
+
+    public async Task AdicionarFuncionario(Funcionario _funcionario)
+    {
+        funcionario = _funcionario;
+
+        if (funcionario.Id > 0)
+        {
+            await _repo.AtualizarFuncionario(funcionario);
+            await PegarTodos();
+
+            return;
+        }
+
+        await _repo.IncluirFuncionario(_funcionario);
+
+        await PegarTodos();
+    }
+
+    private void alterarVisibilidade()
+    {
+        visibilidadePainel = !visibilidadePainel;
+        visibilidadeForm = !visibilidadeForm;
+        tituloForm = "Novo Funcionario";
+    }
+
+    private async Task EditarFuncionario(int id)
+    {
+        Funcionario _funcionario = await _repo.PegarPeloId(id);
+
+        funcionario = _funcionario;
+
+        await _repo.AtualizarFuncionario(funcionario);
+
+        visibilidadePainel = !visibilidadePainel;
+        visibilidadeForm = !visibilidadeForm;
+        tituloForm = "Editar Funcionario";
+    }
+
+
+    private async Task PegarTodos()
+    {
+        ListFuncionarios = await _repo.PegarTodos();
+    }
+
+    private async Task ApagarFuncionario(int id)
+    {
+        await _repo.ApagarFuncionario(id);
+        await PegarTodos();
+    }
+}

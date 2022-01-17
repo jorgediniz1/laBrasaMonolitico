@@ -1,0 +1,159 @@
+﻿@using LaBrasa.Shared.Entities;
+@using LaBrasa.Shared.Interfaces;
+
+
+@page "/contas"
+<h3>Contas</h3>
+
+@if (visibilidadePainel)
+{
+    <form>
+        <MudGrid>
+            <MudItem xs="6" sm="4" md="4">
+                <MudDatePicker Label="Data inicial" @bind-Date="date" Color="Color.Error" />
+            </MudItem>
+            <MudItem xs="6" sm="4" md="4">
+                <MudDatePicker Label="Data final" Editable="true" @bind-Date="date" Color="Color.Error" Placeholder="Select Date" />
+            </MudItem>
+        </MudGrid>
+        <br />
+        <MudButton Variant="Variant.Filled" Color="Color.Error">Buscar</MudButton>
+
+    </form>
+
+
+    <div class="row">
+        <div class="col-4">
+            <MudButton Variant="Variant.Filled" Style="width:100px" Color="Color.Secondary">Vencidas</MudButton>
+        </div>
+        <div class="col-4">
+            <MudButton Variant="Variant.Filled" Style="width:100px" Color="Color.Primary">A pagar</MudButton>
+        </div>
+        <div class="col-4">
+            <MudButton Variant="Variant.Filled" Style="width:100px" Color="Color.Success">Pagas</MudButton>
+        </div>
+
+    </div>
+
+    <div class="row mt-3">
+        <div style="font-size: 12px; width: 200px; margin: 0 auto; text-align: center; color: green;">R$ <label style="font-size: 20px; font-weight: 500; color: green;">512,00</label></div>
+    </div>
+
+
+    <MudSimpleTable Style="overflow-x: auto;">
+        <thead>
+            <tr>
+                @foreach (var h in headings)
+                {
+                    <th>@h</th>
+
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in rows)
+            {
+                <tr>
+                    @foreach (var x in row.Split())
+                    {
+                        <td>@x</td>
+
+                    }
+                </tr>
+            }
+        </tbody>
+    </MudSimpleTable>
+    <br />
+
+    <div class="row">
+        <div>
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary">PDF</MudButton>
+        </div>
+        <div>
+            <MudButton Variant="Variant.Filled" Color="Color.Success" style="border-radius: 0!important" @onclick="alterarVisibilidade"><i class="oi oi-plus"></i></MudButton>
+        </div>
+    </div>
+}
+
+@if (visibilidadeForm)
+{
+
+    <div>
+        @tituloForm
+    </div>
+    <br />
+    <form>
+        <div class="row">
+            <div class="form-group col-12">
+                <label for="exampleInputEmail1">Fornecedor</label>
+                <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Fornecedor">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-12">
+                <label for="exampleFormControlTextarea2">Descrição</label>
+                <textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3"></textarea>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-4">
+                <label for="exampleInputEmail1">Data Compra</label>
+                <input type="date" class="form-control" id="exampleInputEmail1">
+            </div>
+            <div class="form-group col-4">
+                <label for="exampleInputEmail1">Vencimento</label>
+                <input type="date" class="form-control" id="exampleInputEmail1">
+            </div>
+            <div class="form-group col-4">
+                <label for="exampleInputEmail1">Valor</label>
+                <input type="text" class="form-control" id="exampleInputEmail1">
+            </div>
+        </div>
+
+        <div class="row">
+            <button type="submit" class="btn btn-danger col-6">Submit</button>
+            <button class="btn btn-light col-6" @onclick="alterarVisibilidade">Voltar</button>
+        </div>
+    </form>
+}
+
+@code {
+
+    MudDatePicker _picker;
+    DateTime? date = DateTime.Today;
+    private bool autoClose;
+
+    string[] headings = { "Descrição", "Data Compra", "Data Vencimento", "Valor" };
+    string[] rows = {
+        @"HiperFrios 14/04/2021 14/05/2021 R$566,00",
+        @"HiperFrios 14/04/2021 14/05/2021 R$566,00",
+        @"HiperFrios 14/04/2021 14/05/2021 R$566,00",
+        @"HiperFrios 14/04/2021 14/05/2021 R$566,00",
+        @"HiperFrios 14/04/2021 14/05/2021 R$566,00",
+        @"HiperFrios 14/04/2021 14/05/2021 R$566,00",
+        @"HiperFrios 14/04/2021 14/05/2021 R$566,00",
+    };
+
+    string tituloForm;
+    bool visibilidadePainel = true;
+    bool visibilidadeForm = false;
+
+
+
+    private void alterarVisibilidade()
+    {
+        visibilidadePainel = !visibilidadePainel;
+        visibilidadeForm = !visibilidadeForm;
+        tituloForm = "Nova Conta";
+    }
+
+    private void EditarConta()
+    {
+        visibilidadePainel = !visibilidadePainel;
+        visibilidadeForm = !visibilidadeForm;
+        tituloForm = "Editar Produto";
+    }
+
+}

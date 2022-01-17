@@ -1,0 +1,199 @@
+﻿@using LaBrasa.Shared.Entities;
+@using LaBrasa.Shared.Interfaces;
+@inject IProdutoRepo _repo;
+
+
+
+@page "/produtos"
+@using LaBrasa.Shared
+
+<h3>Produtos</h3>
+<style>
+    .btn {
+        border-radius: 0;
+    }
+
+    .btn-danger {
+    }
+
+    .btn-primary, .btn-success {
+    }
+
+    .float {
+        position: absolute;
+        right: 0;
+        margin-right: 10px;
+        top: 0;
+        margin-top: 5px;
+    }
+
+    .float-2 {
+        position: absolute;
+        right: 0;
+        margin-right: 80px;
+        top: 0;
+        margin-top: 5px;
+    }
+</style>
+
+<div>
+    @if (visibilidadePainel)
+    {
+
+        <div class="input-group">
+            <input class="form-control" placeholder="Pesquisar..." />
+            <button class="btn btn-danger" style="border-radius: 0!important"><i class="oi oi-magnifying-glass"></i></button>
+            <button class="btn btn-success" style="margin-left: 25px;" @onclick="alterarVisibilidade"><i class="oi oi-plus"></i></button>
+        </div>
+
+
+        <ul class="list-group mt-3">
+
+            @foreach (var produto in ListProdutos)
+            {
+                <li class="list-group-item mt-4">
+                    @produto.Nome
+                    <div class="float-2">
+                        <button class="btn btn-danger" @onclick="() => ApagarProduto(produto.Id)"><i>X</i></button>
+                    </div>
+
+                    <div class="float">
+                        <button class="btn btn-primary"><i class="oi oi-pencil" @onclick="() => EditarProdutoBtn(produto.Id)"></i></button>
+                    </div>
+                </li>
+            }
+        </ul>
+
+    }
+    @if (visibilidadeForm)
+    {
+        <div>
+            @tituloForm
+        </div>
+        <form>
+            <div class="row">
+
+                <div class="form-group col-8">
+                    <label for="exampleInputEmail1">Nome</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Nome" @bind="produto.Nome">
+                </div>
+
+                <div class="form-group col-4">
+                    <label for="exampleInputEmail1">Id</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Id" @bind="produto.Id">
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="form-group col-12">
+                    <label for="exampleFormControlSelect1">Categoria</label>
+                    <select class="form-control" id="exampleFormControlSelect1" @bind="produto.Catergoria">
+                        <option>Alimento</option>
+                        <option>Bebida</option>
+
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-6">
+                    <label for="exampleInputEmail1">Preço Custo</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Nome" @bind="produto.PrecoCusto">
+                </div>
+                <div class="form-group col-6">
+                    <label for="exampleInputEmail1">Preço Venda</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Id" @bind="produto.PrecoVenda">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-4">
+                    <label for="exampleInputEmail1">Qtd Minima</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" @bind="produto.QuantidadeMinima">
+                </div>
+                <div class="form-group col-4">
+                    <label for="exampleInputEmail1">Estoque</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" @bind="produto.QuantidadeEstoque">
+                </div>
+                <div class="form-group col-4">
+                    <label for="exampleInputEmail1">A adicionar</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" @bind="produto.QuantidadeAdicionar">
+                </div>
+            </div>
+
+            <div class="row">
+                <button type="submit" class="btn btn-danger col-6" @onclick="() => AdicionarProduto(produto)">Submit</button>
+                <button class="btn btn-light col-6" @onclick="alterarVisibilidade">Voltar</button>
+            </div>
+        </form>
+    }
+
+
+</div>
+
+@code {
+
+    string tituloForm;
+    bool visibilidadePainel = true;
+    bool visibilidadeForm = false;
+
+    Produto produto = new Produto();
+    List<Produto> ListProdutos = new List<Produto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await PegarTodos();
+    }
+
+    public async Task AdicionarProduto(Produto _produto)
+    {
+        produto = _produto;
+
+        if (produto.Id > 0)
+        {
+            await _repo.AtualizarProduto(produto);
+            await PegarTodos();
+
+            return;
+        }
+
+        await _repo.IncluirProduto(_produto);
+
+        await PegarTodos();
+    }
+
+
+    private void alterarVisibilidade()
+    {
+        visibilidadePainel = !visibilidadePainel;
+        visibilidadeForm = !visibilidadeForm;
+        tituloForm = "Novo Produto";
+    }
+
+    private async Task EditarProdutoBtn(int id)
+    {
+        Produto _produto = await _repo.PegarPeloId(id);
+
+        produto = _produto;
+
+        await _repo.AtualizarProduto(produto);
+
+
+        visibilidadePainel = !visibilidadePainel;
+        visibilidadeForm = !visibilidadeForm;
+        tituloForm = "Editar Produto";
+    }
+
+    public async Task ApagarProduto(int id)
+    {
+        await _repo.ApagarProduto(id);
+        await PegarTodos();
+    }
+
+    private async Task PegarTodos()
+    {
+        ListProdutos = await _repo.PegarTodos();
+    }
+
+}

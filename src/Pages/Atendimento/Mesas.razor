@@ -1,0 +1,125 @@
+﻿@page "/mesas"
+
+<style>
+    .btn {
+        width: 80px;
+        height: 80px;
+        margin: 10px;
+    }
+</style>
+
+
+
+<br />
+
+@if (visibilidadePainel)
+{
+
+
+    <div class="row">
+        <h3>Mesas</h3>
+        <div>
+            <button></button>
+        </div>
+    </div>
+    <br /><div>
+        <div class="row" style="">
+            <div class="col-3">
+                <button type="button" class="btn btn-success" @onclick="AbrirMesa">Mesa 1</button>
+            </div>
+
+            <div class="col-3">
+                <button type="button" class="btn btn-success">Mesa 2</button>
+            </div>
+
+            <div class="col-3">
+                <button type="button" class="btn btn-success">Mesa 3</button>
+            </div>
+
+            <div class="col-3">
+                <button type="button" class="btn btn-danger">Mesa 4</button>
+            </div>
+
+            <div class="col-3">
+                <button type="button" class="btn btn-success">Mesa 1</button>
+            </div>
+
+            <div class="col-3">
+                <button type="button" class="btn btn-success">Mesa 2</button>
+            </div>
+
+            <div class="col-3">
+                <button type="button" class="btn btn-success">Mesa 3</button>
+            </div>
+
+            <div class="col-3">
+                <button type="button" class="btn btn-danger">Mesa 4</button>
+            </div>
+        </div>
+    </div>
+
+}
+
+@if (visibilidadeDetalheMesa)
+{
+
+<div class="row">
+
+    <div class="col-md-3">
+        <button type="button" class="btn btn-danger">Mesa 4</button>
+    </div>
+
+    <div class="col-xl-3">
+       
+        <div>
+        <label>Comandas abertas:</label>
+        </div>
+      
+        <div>
+        <label>Comandas Fechadas:</label>
+        </div>
+       
+        <div>
+        <label>Pedidos em andamento:</label>
+        </div>
+    </div>
+
+
+    <div  class="col text-center">
+        <div>
+            <button type="submit" style="height:50px; width:300px;" class="btn btn-danger">Novo Pedido</button>
+        </div>
+
+        <div>
+            <button type="submit" style="height:50px; width:300px;" class="btn btn-danger">Pedidos</button>
+        </div>
+
+        <div>
+            <button type="submit" style="height:50px; width:300px; " class="btn btn-danger">Comandas</button>
+        </div>
+    </div>
+
+</div>
+}
+
+
+@code {
+
+    bool visibilidadePainel = true;
+    bool visibilidadeDetalheMesa = false;
+
+    private void alterarVisibilidade()
+    {
+        visibilidadePainel = !visibilidadePainel;
+        visibilidadeDetalheMesa = !visibilidadeDetalheMesa;
+
+    }
+
+    private void AbrirMesa()
+    {
+        visibilidadePainel = !visibilidadePainel;
+        visibilidadeDetalheMesa = !visibilidadeDetalheMesa;
+
+    }
+
+}

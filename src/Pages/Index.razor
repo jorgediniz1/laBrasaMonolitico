@@ -1,0 +1,77 @@
+﻿@layout EmptyLayout
+
+<style>
+    .input-group-text {
+        width: 80px;
+    }
+
+    .top {
+        background-color: red;
+        margin-left: -50px;
+        margin-right: -50px;
+        height: 240px;
+        margin-bottom: 32px;
+    }
+
+    .max{
+        min-width: 300px; 
+        max-width: 600px; 
+        margin: 0 auto;
+    }
+    
+    .btn {
+        border-radius: 0;
+        width: 300px;
+        margin-top: 32px;
+
+    }
+   
+    img {
+        max-width: 300px;
+        max-height: 180px;
+        width: auto;
+        height: auto;
+        margin-left: auto;
+        margin-right: auto;
+        /* width: 240px;
+           margin: 0 auto; */
+    }
+  
+</style>
+
+<div class="container">
+    <div>
+
+        <div class="row top">
+            <img src="assets/labrasalogo.png" />
+        </div>
+        <div class="input-group mb-3 max">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    Login
+                </div>
+            </div>
+            <input type="text" class="form-control" aria-label="Text input with checkbox">
+        </div>
+
+        <div class="input-group max">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    Senha
+                </div>
+            </div>
+            <input type="password" class="form-control" aria-label="Text input with radio button">
+        </div>
+
+        <div class="row max">
+            <button class="btn btn-outline-danger col-12">
+                Entrar
+            </button>
+        </div>
+   
+    </div>
+
+</div>
+@code{
+
+}

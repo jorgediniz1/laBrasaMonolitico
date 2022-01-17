@@ -1,0 +1,61 @@
+﻿@page "/vendas"
+
+<h3>Vendas</h3>
+
+<form>
+    <MudGrid>
+        <MudItem xs="6" sm="4" md="4">
+            <MudDatePicker Label="Data inicial" @bind-Date="date" Color="Color.Error" />
+        </MudItem>
+        <MudItem xs="6" sm="4" md="4">
+            <MudDatePicker Label="Data final" Editable="true" @bind-Date="date" Color="Color.Error" Placeholder="Select Date" />
+        </MudItem>
+    </MudGrid>
+    <br />
+    <MudButton Variant="Variant.Filled" Color="Color.Error">Buscar</MudButton>
+
+</form>
+
+<div class="row mt-3">
+    <div style="font-size: 12px; width: 200px; margin: 0 auto; text-align: center; color: green;">R$ <label style="font-size: 20px; font-weight: 500; color: green;">512,00</label></div>
+</div>
+
+<MudSimpleTable Style="overflow-x: auto;">
+    <thead>
+        <tr>
+            @foreach (var h in headings)
+            {
+                <th>@h</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in rows)
+        {
+            <tr>
+                @foreach (var x in row.Split())
+                {
+                    <td>@x</td>
+                }
+            </tr>
+        }
+    </tbody>
+</MudSimpleTable>
+<br />
+<MudButton Variant="Variant.Filled" Color="Color.Secondary">PDF</MudButton>
+
+@code {
+    MudDatePicker _picker;
+    DateTime? date = DateTime.Today;
+    private bool autoClose;
+
+    string[] headings = { "ID", "Data", "Valor" };
+    string[] rows = {
+        @"1 30/11/2021 R$84,00",
+        @"2 30/11/2021 R$55,00",
+        @"3 30/11/2021 R$102,00",
+        @"4 30/11/2021 R$25,00",
+        @"5 30/11/2021 R$65,00",
+        @"6 30/11/2021 R$90,00",
+    };
+}
